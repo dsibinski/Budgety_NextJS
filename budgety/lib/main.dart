@@ -20,8 +20,8 @@ void main() {
 
 void handleQuickAction(actionType) {
   if (actionType == 'action_newSpending') {
-      print('Add Spending action invoked!');
-    }
+    print('Add Spending action invoked!');
+  }
 }
 
 class BudgetyApp extends StatelessWidget {
