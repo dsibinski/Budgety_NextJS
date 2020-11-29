@@ -1,4 +1,4 @@
-package com.example.budgety
+package net.codejourney.budgety
 
 import io.flutter.embedding.android.FlutterActivity;
 
