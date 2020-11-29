@@ -1,27 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quick_actions/quick_actions.dart';
-
-final QuickActions quickActions = new QuickActions();
 
 void main() {
-  //WidgetsFlutterBinding.ensureInitialized();
-
   runApp(BudgetyApp());
-
-  quickActions.initialize(handleQuickAction);
-
-  quickActions.setShortcutItems(<ShortcutItem>[
-    const ShortcutItem(
-        type: 'action_newSpending',
-        localizedTitle: 'Add spending',
-        icon: 'icon_new'),
-  ]);
-}
-
-void handleQuickAction(actionType) {
-  if (actionType == 'action_newSpending') {
-    print('Add Spending action invoked!');
-  }
 }
 
 class BudgetyApp extends StatelessWidget {
@@ -40,7 +20,15 @@ class BudgetyApp extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.lightBlue, fontSize: 20)),
         ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: this.buttonClicked,
+        ),
       ),
     );
+  }
+
+  void buttonClicked() {
+    print("Button clicked func");
   }
 }
