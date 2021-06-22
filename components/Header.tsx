@@ -1,14 +1,8 @@
-import headerStyles from '../styles/Header.module.css';
-
 const Header = () => {
 	return (
-		<div>
-			<h1 className={headerStyles.title}>
-				<span>Budgety</span>
-			</h1>
-			<p className={headerStyles.description}>
-				Manage your finances in an easy way
-			</p>
+		<div className="text-center">
+			<span className="text-6xl font-bold">Budgety</span>
+			<p className="pt-4 text-xl">Manage your finances in an easy way</p>
 		</div>
 	);
 };

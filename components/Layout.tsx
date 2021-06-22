@@ -8,8 +8,8 @@ const Layout = ({ children }: any) => {
 		<>
 			<Meta />
 			<Navigation />
-			<div className={styles.container}>
-				<main className={styles.main}>
+			<div className="flex flex-col items-center justify-center h-screen">
+				<main className="flex flex-1 flex-col items-center justify-center space-y-4">
 					<Header />
 					{children}
 				</main>
