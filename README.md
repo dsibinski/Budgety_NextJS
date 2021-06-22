@@ -12,3 +12,6 @@ npm run dev
 # or
 yarn dev
 ```
+
+## Backend
+Backend repository can be found here: https://github.com/dsibinski/Budgety-backend
