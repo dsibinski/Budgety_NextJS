@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import initFirebase from '../firebase/firebaseClient';
+import nookies from 'nookies';
 
 initFirebase();
 
@@ -23,13 +24,18 @@ const useUser = () => {
 	};
 
 	useEffect(() => {
-		const cancelAuthListener = firebase.auth().onIdTokenChanged((user) => {
-			if (user) {
-				setUser(user);
-			} else {
-				setUser(null);
-			}
-		});
+		const cancelAuthListener = firebase
+			.auth()
+			.onIdTokenChanged(async (user) => {
+				if (user) {
+					const token = await user.getIdToken();
+					nookies.set(undefined, 'token', token, {});
+					setUser(user);
+				} else {
+					setUser(null);
+					nookies.set(undefined, 'token', '', {});
+				}
+			});
 
 		return () => {
 			cancelAuthListener();
