@@ -24,25 +24,37 @@ function Profile({ sessionUser }: { sessionUser: User }) {
 			</div>
 		);
 	} else {
-		return <FirebaseAuth />;
+		return <p>You need to login first</p>;
 	}
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	try {
+		console.log('checking token start');
 		const cookies = nookies.get(context);
-		const token: any = await verifyIdToken(cookies.token);
-		const { uid, email }: { uid: string; email: string } = token;
-		const userModel: User = { name: email, id: uid };
-
-		return {
-			props: {
-				sessionUser: userModel,
-			},
-		};
+		console.log('Token:');
+		console.log(cookies.token);
+		if (!!cookies.token) {
+			const token: any = await verifyIdToken(cookies.token);
+			const { uid, email }: { uid: string; email: string } = token;
+			const userModel: User = { name: email, id: uid };
+			return {
+				props: {
+					sessionUser: userModel,
+				},
+			};
+		} else {
+			context.res.writeHead(302, { location: '/auth' });
+			context.res.end();
+			return {
+				props: {
+					sessionUser: null,
+				},
+			};
+		}
 	} catch (e) {
-		// context.res.writeHead(302, { location: '/auth' });
-		// context.res.end();
+		context.res.writeHead(302, { location: '/auth' });
+		context.res.end();
 		return {
 			props: {
 				sessionUser: null,
