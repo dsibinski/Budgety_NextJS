@@ -1,7 +1,7 @@
 import firebaseAdmin from 'firebase-admin';
 
 export const verifyIdToken = (token: string) => {
-	if (!firebaseAdmin.apps.length) {
+	if (!firebaseAdmin?.apps?.length) {
 		firebaseAdmin.initializeApp({
 			credential: firebaseAdmin.credential.cert({
 				privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(
@@ -13,12 +13,12 @@ export const verifyIdToken = (token: string) => {
 			}),
 			databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 		});
-
-		return firebaseAdmin
-			.auth()
-			.verifyIdToken(token)
-			.catch((e) => {
-				throw e;
-			});
 	}
+
+	return firebaseAdmin
+		.auth()
+		.verifyIdToken(token)
+		.catch((e) => {
+			throw e;
+		});
 };

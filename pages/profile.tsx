@@ -33,7 +33,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		const { uid, email }: { uid: string; email: string } = token;
 
 		return {
-			props: { session: `Your email is ${email} and your UID is ${uid}` },
+			props: {
+				session: `Your email address is ${email} and your UID is ${uid}`,
+			},
 		};
 	} catch (e) {
 		console.log('ERRRRRORORORO');
