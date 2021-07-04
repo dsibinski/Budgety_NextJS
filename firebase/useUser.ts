@@ -4,11 +4,12 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import initFirebase from '../firebase/firebaseClient';
 import nookies from 'nookies';
+import User from '../models/user';
 
 initFirebase();
 
-const useUser = () => {
-	const [user, setUser] = useState<firebase.User | null>();
+const useUser = (initUser: User | null) => {
+	const [user, setUser] = useState<User | null>(initUser);
 	const router = useRouter();
 
 	const logout = async () => {
@@ -16,6 +17,8 @@ const useUser = () => {
 			.auth()
 			.signOut()
 			.then(() => {
+				setUser(null);
+				nookies.set(undefined, 'token', '', {});
 				router.push('/auth');
 			})
 			.catch((e) => {
@@ -30,10 +33,10 @@ const useUser = () => {
 				if (user) {
 					const token = await user.getIdToken();
 					nookies.set(undefined, 'token', token, {});
-					setUser(user);
-				} else {
-					setUser(null);
-					nookies.set(undefined, 'token', '', {});
+					setUser({
+						name: user.displayName || user.email || '',
+						id: user.uid,
+					});
 				}
 			});
 

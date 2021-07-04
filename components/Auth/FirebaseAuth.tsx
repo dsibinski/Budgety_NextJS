@@ -8,7 +8,7 @@ initFirebase();
 
 const uiConfig = {
 	signInFlow: 'popup',
-	signInSuccessUrl: '/',
+	signInSuccessUrl: '/profile',
 	signInOptions: [
 		{
 			provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
