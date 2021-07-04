@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
+import { useUser } from '../firebase/useUser';
 
 const navigation = [
 	{ name: 'Home', href: '/', current: true },
@@ -13,6 +14,8 @@ function classNames(...classes: any[]) {
 }
 
 export default function Navigation() {
+	const { user, logout } = useUser(null);
+
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
 			{({ open }) => (
@@ -97,7 +100,20 @@ export default function Navigation() {
 													<Menu.Item>
 														{({ active }) => (
 															<a
-																href="/auth"
+																href={
+																	!!user
+																		? '#'
+																		: '/auth'
+																}
+																onClick={
+																	!!user
+																		? (
+																				e
+																		  ) => {
+																				logout();
+																		  }
+																		: undefined
+																}
 																className={classNames(
 																	active
 																		? 'bg-gray-100'
@@ -105,7 +121,9 @@ export default function Navigation() {
 																	'block px-4 py-2 text-sm text-gray-700'
 																)}
 															>
-																Login
+																{!!user
+																	? 'Logout'
+																	: 'Login'}
 															</a>
 														)}
 													</Menu.Item>
