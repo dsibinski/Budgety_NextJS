@@ -4,17 +4,16 @@ import initFirebase from '../firebase/firebaseClient';
 import { GetServerSideProps } from 'next';
 import { useUser } from '../firebase/useUser';
 import User from '../models/user';
-import FirebaseAuth from '../components/Auth/FirebaseAuth';
 
-function Profile({ sessionUser }: { sessionUser: User }) {
+function Operations({ sessionUser }: { sessionUser: User }) {
 	initFirebase();
 	const { user, logout } = useUser(sessionUser);
 
 	if (user) {
 		return (
-			<div>
-				<div>You are authenticated!</div>
-				<div>{user.name}</div>
+			<div className="flex flex-col">
+				<h1 className="text-2xl">Hello {user.name}!</h1>
+				<p>Your list of operations will soon be here :)</p>
 				<button
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 					onClick={() => logout()}
@@ -30,14 +29,11 @@ function Profile({ sessionUser }: { sessionUser: User }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	try {
-		console.log('checking token start');
 		const cookies = nookies.get(context);
-		console.log('Token:');
-		console.log(cookies.token);
 		if (!!cookies.token) {
 			const token: any = await verifyIdToken(cookies.token);
-			const { uid, email }: { uid: string; email: string } = token;
-			const userModel: User = { name: email, id: uid };
+			const { uid, name }: { uid: string; name: string } = token;
+			const userModel: User = { name: name, id: uid };
 			return {
 				props: {
 					sessionUser: userModel,
@@ -63,4 +59,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	}
 };
 
-export default Profile;
+export default Operations;
