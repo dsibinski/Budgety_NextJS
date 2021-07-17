@@ -6,7 +6,6 @@ import { useUser } from '../firebase/useUser';
 import User from '../models/user';
 
 function Operations({ sessionUser }: { sessionUser: User }) {
-	initFirebase();
 	const { user, logout } = useUser(sessionUser);
 
 	if (user) {

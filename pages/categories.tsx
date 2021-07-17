@@ -1,19 +1,43 @@
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import nookies from 'nookies';
 import { verifyIdToken } from '../firebase/firebaseAdmin';
-import initFirebase from '../firebase/firebaseClient';
 import { GetServerSideProps } from 'next';
 import { useUser } from '../firebase/useUser';
 import User from '../models/user';
+import React, { useState, useEffect } from 'react';
+import CategoriesCollection from '../models/categoriesCollection';
 
 function Categories({ sessionUser }: { sessionUser: User }) {
-	initFirebase();
 	const { user, logout } = useUser(sessionUser);
+	const [categories, setCategories] = useState<any>();
+	useEffect(() => {
+		firebase
+			.firestore()
+			.collection('categories')
+			.get()
+			.then((res) => {
+				setCategories(res);
+			});
+	}, []);
 
 	if (user) {
+		const categoriesItems = categories ? (
+			categories.docs.map((doc: any) =>
+				(doc.data() as CategoriesCollection).names.map(
+					(categoryName) => {
+						<li key={doc.id + categoryName}>categoryName</li>;
+					}
+				)
+			)
+		) : (
+			<p>Loading categories...</p>
+		);
 		return (
 			<div className="flex flex-col">
 				<h1 className="text-2xl">Hello {user.name}!</h1>
-				<p>Your list of categories will soon be here :)</p>
+				<p>Categories list:</p>
+				<ul className="list-disc">{categoriesItems}</ul>
 				<button
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 					onClick={() => logout()}
