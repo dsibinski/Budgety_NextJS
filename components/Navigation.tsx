@@ -7,6 +7,7 @@ import { useUser } from '../firebase/useUser';
 const navigation = [
 	{ name: 'Home', href: '/', current: true },
 	{ name: 'Operations', href: '/operations', current: false },
+	{ name: 'Categories', href: '/categories', current: false },
 ];
 
 function classNames(...classes: any[]) {
