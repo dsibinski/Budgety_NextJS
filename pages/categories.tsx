@@ -6,33 +6,44 @@ import { GetServerSideProps } from 'next';
 import { useUser } from '../firebase/useUser';
 import User from '../models/user';
 import React, { useState, useEffect } from 'react';
-import CategoriesCollection from '../models/categoriesCollection';
+import CategoriesData from '../models/categoriesData';
 
 function Categories({ sessionUser }: { sessionUser: User }) {
 	const { user, logout } = useUser(sessionUser);
-	const [categories, setCategories] = useState<any>();
+	const [categories, setCategories] = useState<CategoriesData[]>([]);
 	useEffect(() => {
 		firebase
 			.firestore()
 			.collection('categories')
 			.get()
 			.then((res) => {
-				setCategories(res);
+				const categoriesData: CategoriesData[] = [];
+				res.forEach((doc) => {
+					const names = doc.data()['names'] as string[];
+					if (names?.length > 0) {
+						categoriesData.push({
+							documentId: doc.id,
+							names: names,
+						});
+					}
+				});
+				setCategories(categoriesData);
 			});
 	}, []);
 
 	if (user) {
 		const categoriesItems = categories ? (
-			categories.docs.map((doc: any) =>
-				(doc.data() as CategoriesCollection).names.map(
-					(categoryName) => {
-						<li key={doc.id + categoryName}>categoryName</li>;
-					}
-				)
-			)
+			categories.map((category) => {
+				return category.names.map((categoryString) => (
+					<li key={`${category.documentId}-${categoryString}`}>
+						{categoryString}
+					</li>
+				));
+			})
 		) : (
 			<p>Loading categories...</p>
 		);
+
 		return (
 			<div className="flex flex-col">
 				<h1 className="text-2xl">Hello {user.name}!</h1>
