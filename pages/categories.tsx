@@ -7,33 +7,19 @@ import { useUser } from '../firebase/useUser';
 import User from '../models/user';
 import React, { useState, useEffect } from 'react';
 import CategoriesData from '../models/categoriesData';
+import initFirebase from '../firebase/firebaseClient';
 
-function Categories({ sessionUser }: { sessionUser: User }) {
-	const { user, logout } = useUser(sessionUser);
-	const [categories, setCategories] = useState<CategoriesData[]>([]);
-	useEffect(() => {
-		firebase
-			.firestore()
-			.collection('categories')
-			.get()
-			.then((res) => {
-				const categoriesData: CategoriesData[] = [];
-				res.forEach((doc) => {
-					const names = doc.data()['names'] as string[];
-					if (names?.length > 0) {
-						categoriesData.push({
-							documentId: doc.id,
-							names: names,
-						});
-					}
-				});
-				setCategories(categoriesData);
-			});
-	}, []);
+type CategoriesProps = {
+	sessionUser: User | null;
+	categories: CategoriesData[];
+};
+
+function Categories(props: CategoriesProps) {
+	const { user, logout } = useUser(props.sessionUser);
 
 	if (user) {
-		const categoriesItems = categories ? (
-			categories.map((category) => {
+		const categoriesItems = props.categories ? (
+			props.categories.map((category) => {
 				return category.names.map((categoryString) => (
 					<li key={`${category.documentId}-${categoryString}`}>
 						{categoryString}
@@ -64,15 +50,39 @@ function Categories({ sessionUser }: { sessionUser: User }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	try {
+		initFirebase();
+		let categoriesProps: CategoriesProps = {
+			sessionUser: null,
+			categories: [],
+		};
+
 		const cookies = nookies.get(context);
 		if (!!cookies.token) {
 			const token: any = await verifyIdToken(cookies.token);
 			const { uid, name }: { uid: string; name: string } = token;
 			const userModel: User = { name: name, id: uid };
+			categoriesProps.sessionUser = userModel;
+
+			let result = await firebase
+				.firestore()
+				.collection('categories')
+				.get();
+
+			const categoriesData: CategoriesData[] = [];
+			result.forEach((doc) => {
+				const names = doc.data()['names'] as string[];
+				if (names?.length > 0) {
+					categoriesData.push({
+						documentId: doc.id,
+						names: names,
+					});
+				}
+			});
+
+			categoriesProps.categories = categoriesData;
+
 			return {
-				props: {
-					sessionUser: userModel,
-				},
+				props: categoriesProps,
 			};
 		} else {
 			context.res.writeHead(302, { location: '/auth' });
