@@ -1,20 +1,21 @@
-import React from 'react';
+import firebase from 'firebase/app';
 import 'firebase/firestore';
 import nookies from 'nookies';
-import { firebaseAdmin } from '../firebase/firebaseAdmin';
+import { verifyIdToken } from '../firebase/firebaseAdmin';
 import { GetServerSideProps } from 'next';
+import { useUser } from '../firebase/useUser';
+import User from '../models/user';
+import React, { useState, useEffect } from 'react';
 import CategoriesData from '../models/categoriesData';
-import { firebase } from '../firebase/firebaseClient';
-import { useAuth } from '../firebase/authProvider';
-import { useRouter } from 'next/router';
+import initFirebase from '../firebase/firebaseClient';
 
 type CategoriesProps = {
-	categories: CategoriesData[] | null;
+	sessionUser: User | null;
+	categories: CategoriesData[];
 };
 
 function Categories(props: CategoriesProps) {
-	const { user } = useAuth();
-	const router = useRouter();
+	const { user, logout } = useUser(props.sessionUser);
 
 	if (user) {
 		const categoriesItems = props.categories ? (
@@ -36,14 +37,7 @@ function Categories(props: CategoriesProps) {
 				<ul className="list-disc">{categoriesItems}</ul>
 				<button
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					onClick={async () => {
-						await firebase
-							.auth()
-							.signOut()
-							.then(() => {
-								router.push('/');
-							});
-					}}
+					onClick={() => logout()}
 				>
 					Log Out
 				</button>
@@ -55,16 +49,19 @@ function Categories(props: CategoriesProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	let categoriesProps: CategoriesProps = {
-		categories: [],
-	};
 	try {
+		initFirebase();
+		let categoriesProps: CategoriesProps = {
+			sessionUser: null,
+			categories: [],
+		};
+
 		const cookies = nookies.get(context);
 		if (!!cookies.token) {
-			const token: any = await firebaseAdmin
-				.auth()
-				.verifyIdToken(cookies.token);
-			const { uid, name }: { uid: string; name: string } = token; // TODO: use uid for data fetching authorization
+			const token: any = await verifyIdToken(cookies.token);
+			const { uid, name }: { uid: string; name: string } = token;
+			const userModel: User = { name: name, id: uid };
+			categoriesProps.sessionUser = userModel;
 
 			let result = await firebase
 				.firestore()
@@ -90,17 +87,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		} else {
 			context.res.writeHead(302, { location: '/auth' });
 			context.res.end();
-			categoriesProps.categories = null;
 			return {
-				props: categoriesProps,
+				props: {
+					sessionUser: null,
+				},
 			};
 		}
 	} catch (e) {
 		context.res.writeHead(302, { location: '/auth' });
 		context.res.end();
-		categoriesProps.categories = null;
 		return {
-			props: categoriesProps,
+			props: {
+				sessionUser: null,
+			},
 		};
 	}
 };

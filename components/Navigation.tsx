@@ -1,9 +1,8 @@
+import Link from 'next/link';
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { useAuth } from '../firebase/authProvider';
-import { firebase } from '../firebase/firebaseClient';
-import { useRouter } from 'next/router';
+import { useUser } from '../firebase/useUser';
 
 const navigation = [
 	{ name: 'Home', href: '/', current: true },
@@ -16,8 +15,7 @@ function classNames(...classes: any[]) {
 }
 
 export default function Navigation() {
-	const { user } = useAuth();
-	const router = useRouter();
+	const { user, logout } = useUser(null);
 
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
@@ -110,19 +108,11 @@ export default function Navigation() {
 																}
 																onClick={
 																	!!user
-																		? (e) =>
-																				async () => {
-																					await firebase
-																						.auth()
-																						.signOut()
-																						.then(
-																							() => {
-																								router.push(
-																									'/'
-																								);
-																							}
-																						);
-																				}
+																		? (
+																				e
+																		  ) => {
+																				logout();
+																		  }
 																		: undefined
 																}
 																className={classNames(

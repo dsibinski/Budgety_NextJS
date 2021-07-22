@@ -1,8 +1,8 @@
 import FirebaseAuth from '../components/Auth/FirebaseAuth';
-import { useAuth } from '../firebase/authProvider';
+import { useUser } from '../firebase/useUser';
 
 const Auth = () => {
-	const { user } = useAuth();
+	const { user, logout } = useUser(null);
 
 	if (user) {
 		return <p>You are already logged in.</p>;
