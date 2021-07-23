@@ -1,5 +1,8 @@
 import Layout from '../components/Layout';
 import '../styles/globals.css';
+import initAuth from '../firebase/initAuth';
+
+initAuth();
 
 function MyApp({ Component, pageProps }) {
 	return (

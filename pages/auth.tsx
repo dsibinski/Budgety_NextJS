@@ -1,12 +1,13 @@
 import FirebaseAuth from '../components/Auth/FirebaseAuth';
-import { useUser } from '../firebase/useUser';
+import { withAuthUser, AuthAction } from 'next-firebase-auth';
+// import { useUser } from '../firebase/useUser';
 
 const Auth = () => {
-	const { user, logout } = useUser(null);
+	// const { user, logout } = useUser(null);
 
-	if (user) {
-		return <p>You are already logged in.</p>;
-	}
+	// if (user) {
+	// 	return <p>You are already logged in.</p>;
+	// }
 
 	return (
 		<div>
@@ -20,4 +21,8 @@ const Auth = () => {
 	);
 };
 
-export default Auth;
+export default withAuthUser({
+	whenAuthed: AuthAction.REDIRECT_TO_APP,
+	whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+	whenUnauthedAfterInit: AuthAction.RENDER,
+})(Auth);

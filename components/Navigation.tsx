@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { useUser } from '../firebase/useUser';
+import { useAuthUser } from 'next-firebase-auth';
 
 const navigation = [
 	{ name: 'Home', href: '/', current: true },
@@ -15,8 +15,7 @@ function classNames(...classes: any[]) {
 }
 
 export default function Navigation() {
-	const { user, logout } = useUser(null);
-
+	const AuthUser = useAuthUser();
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
 			{({ open }) => (
@@ -102,16 +101,16 @@ export default function Navigation() {
 														{({ active }) => (
 															<a
 																href={
-																	!!user
+																	!!AuthUser
 																		? '#'
 																		: '/auth'
 																}
 																onClick={
-																	!!user
+																	!!AuthUser
 																		? (
 																				e
 																		  ) => {
-																				logout();
+																				AuthUser.signOut();
 																		  }
 																		: undefined
 																}
@@ -122,7 +121,7 @@ export default function Navigation() {
 																	'block px-4 py-2 text-sm text-gray-700'
 																)}
 															>
-																{!!user
+																{!!AuthUser
 																	? 'Logout'
 																	: 'Login'}
 															</a>

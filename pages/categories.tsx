@@ -1,25 +1,20 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import nookies from 'nookies';
-import { verifyIdToken } from '../firebase/firebaseAdmin';
-import { GetServerSideProps } from 'next';
-import { useUser } from '../firebase/useUser';
-import User from '../models/user';
-import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
+import {
+	AuthAction,
+	useAuthUser,
+	withAuthUser,
+	withAuthUserTokenSSR,
+} from 'next-firebase-auth';
+import React from 'react';
 import CategoriesData from '../models/categoriesData';
-import initFirebase from '../firebase/firebaseClient';
 
-type CategoriesProps = {
-	sessionUser: User | null;
-	categories: CategoriesData[];
-};
+function Categories({ categories }: any) {
+	const AuthUser = useAuthUser();
 
-function Categories(props: CategoriesProps) {
-	const { user, logout } = useUser(props.sessionUser);
-
-	if (user) {
-		const categoriesItems = props.categories ? (
-			props.categories.map((category) => {
+	if (AuthUser) {
+		const categoriesData = categories as CategoriesData[];
+		const categoriesItems = categoriesData ? (
+			categoriesData.map((category) => {
 				return category.names.map((categoryString) => (
 					<li key={`${category.documentId}-${categoryString}`}>
 						{categoryString}
@@ -32,12 +27,12 @@ function Categories(props: CategoriesProps) {
 
 		return (
 			<div className="flex flex-col">
-				<h1 className="text-2xl">Hello {user.name}!</h1>
+				<h1 className="text-2xl">Hello {AuthUser.displayName}!</h1>
 				<p>Categories list:</p>
 				<ul className="list-disc">{categoriesItems}</ul>
 				<button
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					onClick={() => logout()}
+					onClick={() => AuthUser.signOut()}
 				>
 					Log Out
 				</button>
@@ -48,60 +43,29 @@ function Categories(props: CategoriesProps) {
 	}
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	try {
-		initFirebase();
-		let categoriesProps: CategoriesProps = {
-			sessionUser: null,
-			categories: [],
-		};
+export const getServerSideProps = withAuthUserTokenSSR({
+	whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ AuthUser, req }) => {
+	const token = await AuthUser.getIdToken(); // TODO: use token to be sent to firebase for validation
+	let result = await firebase.firestore().collection('categories').get();
 
-		const cookies = nookies.get(context);
-		if (!!cookies.token) {
-			const token: any = await verifyIdToken(cookies.token);
-			const { uid, name }: { uid: string; name: string } = token;
-			const userModel: User = { name: name, id: uid };
-			categoriesProps.sessionUser = userModel;
-
-			let result = await firebase
-				.firestore()
-				.collection('categories')
-				.get();
-
-			const categoriesData: CategoriesData[] = [];
-			result.forEach((doc) => {
-				const names = doc.data()['names'] as string[];
-				if (names?.length > 0) {
-					categoriesData.push({
-						documentId: doc.id,
-						names: names,
-					});
-				}
+	const categoriesData: CategoriesData[] = [];
+	result.forEach((doc) => {
+		const names = doc.data()['names'] as string[];
+		if (names?.length > 0) {
+			categoriesData.push({
+				documentId: doc.id,
+				names: names,
 			});
-
-			categoriesProps.categories = categoriesData;
-
-			return {
-				props: categoriesProps,
-			};
-		} else {
-			context.res.writeHead(302, { location: '/auth' });
-			context.res.end();
-			return {
-				props: {
-					sessionUser: null,
-				},
-			};
 		}
-	} catch (e) {
-		context.res.writeHead(302, { location: '/auth' });
-		context.res.end();
-		return {
-			props: {
-				sessionUser: null,
-			},
-		};
-	}
-};
+	});
+	return {
+		props: {
+			categories: categoriesData,
+		},
+	};
+});
 
-export default Categories;
+export default withAuthUser({
+	whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+})(Categories);
