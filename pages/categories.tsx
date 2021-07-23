@@ -6,6 +6,7 @@ import {
 	withAuthUserTokenSSR,
 } from 'next-firebase-auth';
 import React from 'react';
+import initAuth from '../firebase/initAuth';
 import CategoriesData from '../models/categoriesData';
 
 function Categories({ categories }: any) {

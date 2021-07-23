@@ -1,10 +1,7 @@
-// import initFirebase from '../../firebase/firebaseClient';
 import { useEffect, useState } from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-
-// initFirebase();
 
 const uiConfig = {
 	signInFlow: 'popup',
@@ -20,10 +17,7 @@ const uiConfig = {
 	credentialHelper: 'none',
 	callbacks: {
 		// https://github.com/firebase/firebaseui-web#signinsuccesswithauthresultauthresult-redirecturl
-		signInSuccessWithAuthResult: () =>
-			// Don't automatically redirect. We handle redirecting based on
-			// auth state in withAuthComponent.js.
-			false,
+		signInSuccessWithAuthResult: () => false,
 	},
 };
 

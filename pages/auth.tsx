@@ -1,14 +1,7 @@
 import FirebaseAuth from '../components/Auth/FirebaseAuth';
-import { withAuthUser, AuthAction } from 'next-firebase-auth';
-// import { useUser } from '../firebase/useUser';
+import { withAuthUser, AuthAction, useAuthUser } from 'next-firebase-auth';
 
 const Auth = () => {
-	// const { user, logout } = useUser(null);
-
-	// if (user) {
-	// 	return <p>You are already logged in.</p>;
-	// }
-
 	return (
 		<div>
 			<div>
