@@ -4,6 +4,7 @@ import {
 	useAuthUser,
 	withAuthUser,
 	withAuthUserTokenSSR,
+	getFirebaseAdmin,
 } from 'next-firebase-auth';
 import React from 'react';
 import initAuth from '../firebase/initAuth';
@@ -48,7 +49,10 @@ export const getServerSideProps = withAuthUserTokenSSR({
 	whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, req }) => {
 	const token = await AuthUser.getIdToken(); // TODO: use token to be sent to firebase for validation
-	let result = await firebase.firestore().collection('categories').get();
+	let result = await getFirebaseAdmin()
+		.firestore()
+		.collection('categories')
+		.get();
 
 	const categoriesData: CategoriesData[] = [];
 	result.forEach((doc) => {
