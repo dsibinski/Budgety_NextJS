@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { firestore } from 'firebase-admin';
 import {
 	AuthAction,
 	useAuthUser,
@@ -48,21 +49,42 @@ export const getServerSideProps = withAuthUserTokenSSR({
 	whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser, req }) => {
 	const token = await AuthUser.getIdToken(); // TODO: use token to be sent to firebase for validation
-	let result = await getFirebaseAdmin()
+	if (typeof AuthUser.id !== 'string') {
+		throw new Error('User has no id');
+	}
+	let categoriesDocument = await getFirebaseAdmin()
 		.firestore()
 		.collection('categories')
+		.doc(AuthUser.id)
 		.get();
 
+	if (!categoriesDocument.exists) {
+		await firestore().collection('categories').doc(AuthUser.id).set({});
+		categoriesDocument = await getFirebaseAdmin()
+			.firestore()
+			.collection('categories')
+			.doc(AuthUser.id)
+			.get();
+	}
+
 	const categoriesData: CategoriesData[] = [];
-	result.forEach((doc) => {
-		const names = doc.data()['names'] as string[];
-		if (names?.length > 0) {
-			categoriesData.push({
-				documentId: doc.id,
-				names: names,
-			});
-		}
-	});
+	// result.forEach((doc) => {
+
+	const categories = categoriesDocument.data();
+
+	if (!categories) {
+		throw new Error("There's no categories data for this user");
+	}
+
+	const names = categories['names'];
+	if (names?.length > 0) {
+		categoriesData.push({
+			documentId: categoriesDocument.id,
+			names: names,
+		});
+	}
+
+	// });
 	return {
 		props: {
 			categories: categoriesData,
