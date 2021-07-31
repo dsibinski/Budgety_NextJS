@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import { firestore } from 'firebase-admin';
 import {
 	AuthAction,
 	useAuthUser,
@@ -7,11 +6,46 @@ import {
 	withAuthUserTokenSSR,
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CategoriesData from '../models/categoriesData';
 
-function Categories({ categories }: any) {
+function Categories() {
 	const AuthUser = useAuthUser();
+	const [categories, setCategories] = useState<CategoriesData[] | null>(null);
+
+	useEffect(() => {
+		if (AuthUser) {
+			if (typeof AuthUser.id !== 'string') {
+				throw new Error('User has no id');
+			}
+			firebase
+				.firestore()
+				.collection('categories')
+				.doc(AuthUser.id)
+				.get()
+				.then((doc) => {
+					const categoriesData: CategoriesData[] = [];
+
+					const categories = doc.data();
+
+					if (!categories) {
+						throw new Error(
+							"There's no categories data for this user"
+						);
+					}
+
+					const names = categories['names'];
+					if (names?.length > 0) {
+						categoriesData.push({
+							documentId: doc.id,
+							names: names,
+						});
+					}
+
+					setCategories(categoriesData);
+				});
+		}
+	}, [AuthUser]);
 
 	if (AuthUser) {
 		const categoriesData = categories as CategoriesData[];
@@ -52,43 +86,22 @@ export const getServerSideProps = withAuthUserTokenSSR({
 	if (typeof AuthUser.id !== 'string') {
 		throw new Error('User has no id');
 	}
-	let categoriesDocument = await getFirebaseAdmin()
+	const categoriesDocument = await getFirebaseAdmin()
 		.firestore()
 		.collection('categories')
 		.doc(AuthUser.id)
 		.get();
 
 	if (!categoriesDocument.exists) {
-		await firestore().collection('categories').doc(AuthUser.id).set({});
-		categoriesDocument = await getFirebaseAdmin()
+		await getFirebaseAdmin()
 			.firestore()
 			.collection('categories')
 			.doc(AuthUser.id)
-			.get();
+			.set({});
 	}
 
-	const categoriesData: CategoriesData[] = [];
-	// result.forEach((doc) => {
-
-	const categories = categoriesDocument.data();
-
-	if (!categories) {
-		throw new Error("There's no categories data for this user");
-	}
-
-	const names = categories['names'];
-	if (names?.length > 0) {
-		categoriesData.push({
-			documentId: categoriesDocument.id,
-			names: names,
-		});
-	}
-
-	// });
 	return {
-		props: {
-			categories: categoriesData,
-		},
+		props: {},
 	};
 });
 
