@@ -1,14 +1,15 @@
 import FirebaseAuth from '../components/Auth/FirebaseAuth';
-import { withAuthUser, AuthAction, useAuthUser } from 'next-firebase-auth';
+import { withAuthUser, AuthAction } from 'next-firebase-auth';
+import { Text } from '@chakra-ui/react';
 
 const Auth = () => {
 	return (
 		<div>
 			<div>
 				<FirebaseAuth />
-				<p className="text-red-600 text-xl text-center">
+				<Text textColor="red.600" fontSize="xl" textAlign="center">
 					<a href="/">Go to Home page</a>
-				</p>
+				</Text>
 			</div>
 		</div>
 	);

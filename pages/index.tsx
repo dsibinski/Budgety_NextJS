@@ -1,9 +1,11 @@
 import Image from 'next/image';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 
 export default function Home() {
 	return (
 		<Box>
+			<Heading>Welcome to Budgety!</Heading>
+			<Text>Explore the menu options to get started.</Text>
 			<Flex
 				justifyContent="center"
 				mt={2}

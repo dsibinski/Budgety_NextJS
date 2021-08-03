@@ -1,3 +1,11 @@
+import {
+	Button,
+	Flex,
+	Heading,
+	UnorderedList,
+	ListItem,
+	Text,
+} from '@chakra-ui/react';
 import firebase from 'firebase';
 import {
 	AuthAction,
@@ -52,9 +60,9 @@ function Categories() {
 		const categoriesItems = categoriesData ? (
 			categoriesData.map((category) => {
 				return category.names.map((categoryString) => (
-					<li key={`${category.documentId}-${categoryString}`}>
+					<ListItem key={`${category.documentId}-${categoryString}`}>
 						{categoryString}
-					</li>
+					</ListItem>
 				));
 			})
 		) : (
@@ -62,17 +70,16 @@ function Categories() {
 		);
 
 		return (
-			<div className="flex flex-col">
-				<h1 className="text-2xl">Hello {AuthUser.displayName}!</h1>
-				<p>Categories list:</p>
-				<ul className="list-disc">{categoriesItems}</ul>
-				<button
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					onClick={() => AuthUser.signOut()}
-				>
+			<Flex direction="column">
+				<Heading size="xl">Hello {AuthUser.displayName}!</Heading>
+				<Text textAlign="center">Categories list:</Text>
+				<UnorderedList alignSelf="center">
+					{categoriesItems}
+				</UnorderedList>
+				<Button colorScheme="blue" onClick={() => AuthUser.signOut()}>
 					Log Out
-				</button>
-			</div>
+				</Button>
+			</Flex>
 		);
 	} else {
 		return <p>You need to login first</p>;

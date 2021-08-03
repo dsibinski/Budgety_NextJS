@@ -1,22 +1,4 @@
-// import { Fragment } from 'react';
-// import { useAuthUser } from 'next-firebase-auth';
-
-// const navigation = [
-// 	{ name: 'Home', href: '/', current: true },
-// 	{ name: 'Operations', href: '/operations', current: false },
-// 	{ name: 'Categories', href: '/categories', current: false },
-// ];
-
-// function classNames(...classes: any[]) {
-// 	return classes.filter(Boolean).join(' ');
-// }
-
-// export default function Navigation() {
-// 	const AuthUser = useAuthUser();
-// 	return <div></div>;
-// }
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuthUser } from 'next-firebase-auth';
 import { Box, Heading, Flex, Button, Link } from '@chakra-ui/react';
 
@@ -32,7 +14,7 @@ const MenuLinkItem = (props: MenuLinkItemProps) => (
 );
 
 const Navigation = () => {
-	const [show, setShow] = React.useState(false);
+	const [show, setShow] = useState(false);
 	const handleToggle = () => setShow(!show);
 	const AuthUser = useAuthUser();
 
@@ -47,7 +29,12 @@ const Navigation = () => {
 			color="white"
 		>
 			<Flex align="center" mr={5}>
-				<Heading as="h1" size="lg" letterSpacing={'-.1rem'}>
+				<Heading
+					title="Manage your finances in an easy way"
+					as="h1"
+					size="lg"
+					letterSpacing={'-.1rem'}
+				>
 					Budgety
 				</Heading>
 			</Flex>
@@ -55,7 +42,7 @@ const Navigation = () => {
 			<Box display={{ base: 'block', md: 'none' }} onClick={handleToggle}>
 				<svg
 					fill="white"
-					width="12px"
+					width="20px"
 					viewBox="0 0 20 20"
 					xmlns="http://www.w3.org/2000/svg"
 				>

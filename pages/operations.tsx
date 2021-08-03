@@ -1,3 +1,4 @@
+import { Button, Flex, Heading, Text } from '@chakra-ui/react';
 import {
 	AuthAction,
 	useAuthUser,
@@ -10,16 +11,15 @@ function Operations() {
 
 	if (AuthUser) {
 		return (
-			<div className="flex flex-col">
-				<h1 className="text-2xl">Hello {AuthUser.displayName}!</h1>
-				<p>Your list of operations will soon be here :)</p>
-				<button
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-					onClick={() => AuthUser.signOut()}
-				>
+			<Flex direction="column">
+				<Heading size="xl">Hello {AuthUser.displayName}!</Heading>
+				<Text textAlign="center">
+					Your list of operations will soon be here :)
+				</Text>
+				<Button colorScheme="blue" onClick={() => AuthUser.signOut()}>
 					Log Out
-				</button>
-			</div>
+				</Button>
+			</Flex>
 		);
 	} else {
 		return <p>You need to login first</p>;
