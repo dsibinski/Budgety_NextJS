@@ -1,3 +1,6 @@
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=budgety-three)
+
+
 This is a repository of Budgety app.
 The documentation can be found on Notion: https://dsibinski.notion.site/Budgety-38ba6937a6d34c379d6ec495fbc5d244
 
