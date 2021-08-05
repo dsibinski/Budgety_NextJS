@@ -76,9 +76,6 @@ function Categories() {
 				<UnorderedList alignSelf="center">
 					{categoriesItems}
 				</UnorderedList>
-				<Button colorScheme="blue" onClick={() => AuthUser.signOut()}>
-					Log Out
-				</Button>
 			</Flex>
 		);
 	} else {

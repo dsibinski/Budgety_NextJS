@@ -5,7 +5,9 @@ export default function Home() {
 	return (
 		<Box>
 			<Heading>Welcome to Budgety!</Heading>
-			<Text>Explore the menu options to get started.</Text>
+			<Text textAlign="center">
+				Explore the menu options to get started.
+			</Text>
 			<Flex
 				justifyContent="center"
 				mt={2}

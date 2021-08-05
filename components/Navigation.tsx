@@ -52,24 +52,23 @@ const Navigation = () => {
 			</Box>
 
 			<Box
-				display={{ sm: show ? 'block' : 'none', md: 'flex' }}
-				width={{ sm: 'full', md: 'auto' }}
+				display={{
+					base: show ? 'block' : 'none',
+					sm: show ? 'block' : 'none',
+					md: 'flex',
+				}}
+				width={{ base: 'full', sm: 'full', md: 'auto' }}
 				alignItems="center"
 				flexGrow={1}
 			>
 				<MenuLinkItem text="Home" url="/" />
 				<MenuLinkItem text="Categories" url="/categories" />
 				<MenuLinkItem text="Operations" url="/operations" />
-			</Box>
-
-			<Box
-				display={{ sm: show ? 'block' : 'none', md: 'block' }}
-				mt={{ base: 4, md: 0 }}
-			>
 				{!!AuthUser?.id && (
 					<Button
 						bg="transparent"
 						border="1px"
+						mt={{ base: 3, md: 0 }}
 						onClick={(e) => AuthUser.signOut()}
 					>
 						Logout

@@ -16,9 +16,6 @@ function Operations() {
 				<Text textAlign="center">
 					Your list of operations will soon be here :)
 				</Text>
-				<Button colorScheme="blue" onClick={() => AuthUser.signOut()}>
-					Log Out
-				</Button>
 			</Flex>
 		);
 	} else {

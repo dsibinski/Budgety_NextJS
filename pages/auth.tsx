@@ -6,10 +6,10 @@ const Auth = () => {
 	return (
 		<div>
 			<div>
-				<FirebaseAuth />
-				<Text textColor="red.600" fontSize="xl" textAlign="center">
-					<a href="/">Go to Home page</a>
+				<Text fontSize="xl">
+					You need to log in in order to access this page
 				</Text>
+				<FirebaseAuth />
 			</div>
 		</div>
 	);
