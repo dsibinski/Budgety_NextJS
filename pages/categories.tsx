@@ -1,10 +1,10 @@
 import {
-	Button,
 	Flex,
 	Heading,
 	UnorderedList,
 	ListItem,
 	Text,
+	Spinner,
 } from '@chakra-ui/react';
 import firebase from 'firebase';
 import {
@@ -15,11 +15,11 @@ import {
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
 import React, { useEffect, useState } from 'react';
-import CategoriesData from '../models/categoriesData';
+import UserCategories from '../models/userCategories';
 
 function Categories() {
 	const AuthUser = useAuthUser();
-	const [categories, setCategories] = useState<CategoriesData[] | null>(null);
+	const [categories, setCategories] = useState<UserCategories | null>(null);
 
 	useEffect(() => {
 		if (AuthUser) {
@@ -32,41 +32,35 @@ function Categories() {
 				.doc(AuthUser.id)
 				.get()
 				.then((doc) => {
-					const categoriesData: CategoriesData[] = [];
+					let userCategoriesData: UserCategories | null = null;
 
-					const categories = doc.data();
+					const categoryDocData = doc.data();
 
-					if (!categories) {
+					if (!categoryDocData) {
 						throw new Error(
 							"There's no categories data for this user"
 						);
 					}
 
-					const names = categories['names'];
+					const names = categoryDocData['names'];
 					if (names?.length > 0) {
-						categoriesData.push({
-							documentId: doc.id,
+						userCategoriesData = {
 							names: names,
-						});
+						};
 					}
 
-					setCategories(categoriesData);
+					setCategories(userCategoriesData);
 				});
 		}
 	}, [AuthUser]);
 
 	if (AuthUser) {
-		const categoriesData = categories as CategoriesData[];
-		const categoriesItems = categoriesData ? (
-			categoriesData.map((category) => {
-				return category.names.map((categoryString) => (
-					<ListItem key={`${category.documentId}-${categoryString}`}>
-						{categoryString}
-					</ListItem>
-				));
+		const categoriesItems = categories ? (
+			categories.names.map((categoryName) => {
+				return <ListItem key={categoryName}>{categoryName}</ListItem>;
 			})
 		) : (
-			<p>Loading categories...</p>
+			<Spinner />
 		);
 
 		return (
