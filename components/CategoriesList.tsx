@@ -2,28 +2,35 @@ import {
 	Table,
 	Thead,
 	Tbody,
-	Tfoot,
 	Tr,
 	Th,
 	Td,
 	TableCaption,
 } from '@chakra-ui/react';
-import CategoriesData from '../models/userCategories';
+import UserCategories from '../models/userCategories';
 
 type CategoriesListProps = {
-	categories: CategoriesData[];
+	categories: UserCategories;
 };
 
 const CategoriesList = ({ categories }: CategoriesListProps) => {
 	return (
 		<Table variant="simple">
-			<TableCaption>Your categories</TableCaption>
+			<TableCaption placement="top">Your categories</TableCaption>
 			<Thead>
 				<Tr>
 					<Th>Category name</Th>
 				</Tr>
 			</Thead>
-			<Tbody>{categories.map((category) => {})}</Tbody>
+			<Tbody>
+				{categories.names.map((categoryName) => {
+					return (
+						<tr>
+							<td align="center">{categoryName}</td>
+						</tr>
+					);
+				})}
+			</Tbody>
 		</Table>
 	);
 };

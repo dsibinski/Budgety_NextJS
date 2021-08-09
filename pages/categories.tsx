@@ -15,6 +15,7 @@ import {
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
 import React, { useEffect, useState } from 'react';
+import CategoriesList from '../components/CategoriesList';
 import UserCategories from '../models/userCategories';
 
 function Categories() {
@@ -55,22 +56,10 @@ function Categories() {
 	}, [AuthUser]);
 
 	if (AuthUser) {
-		const categoriesItems = categories ? (
-			categories.names.map((categoryName) => {
-				return <ListItem key={categoryName}>{categoryName}</ListItem>;
-			})
+		return categories ? (
+			<CategoriesList categories={categories} />
 		) : (
 			<Spinner />
-		);
-
-		return (
-			<Flex direction="column">
-				<Heading size="xl">Hello {AuthUser.displayName}!</Heading>
-				<Text textAlign="center">Categories list:</Text>
-				<UnorderedList alignSelf="center">
-					{categoriesItems}
-				</UnorderedList>
-			</Flex>
 		);
 	} else {
 		return <p>You need to login first</p>;
