@@ -5,6 +5,7 @@ import {
 	ListItem,
 	Text,
 	Spinner,
+	Button,
 } from '@chakra-ui/react';
 import firebase from 'firebase';
 import {
@@ -15,8 +16,8 @@ import {
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
 import React, { useEffect, useState } from 'react';
-import CategoriesList from '../components/CategoriesList';
-import UserCategories from '../models/userCategories';
+import CategoriesList from '../../components/CategoriesList';
+import UserCategories from '../../models/userCategories';
 
 function Categories() {
 	const AuthUser = useAuthUser();
@@ -57,7 +58,12 @@ function Categories() {
 
 	if (AuthUser) {
 		return categories ? (
-			<CategoriesList categories={categories} />
+			<Flex direction="column" width="full">
+				<Button colorScheme="blue" alignSelf="start">
+					Add new category
+				</Button>
+				<CategoriesList categories={categories} />
+			</Flex>
 		) : (
 			<Spinner />
 		);

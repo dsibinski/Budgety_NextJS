@@ -9,16 +9,18 @@ const Layout = ({ children }: any) => {
 			<Navigation />
 			<Flex
 				direction="column"
-				mt={2}
+				m={2}
 				alignItems="center"
 				justifyContent="center"
 				height="100%"
+				width="full"
 			>
 				<Flex
 					direction="column"
 					flex="1 1 0%"
 					alignItems="center"
 					justifyContent="center"
+					width="full"
 				>
 					{children}
 				</Flex>
