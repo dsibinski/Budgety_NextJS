@@ -6,6 +6,7 @@ import {
 	Text,
 	Spinner,
 	Button,
+	Center,
 } from '@chakra-ui/react';
 import firebase from 'firebase';
 import {
@@ -62,7 +63,9 @@ function Categories() {
 				<Button colorScheme="blue" alignSelf="start">
 					Add new category
 				</Button>
-				<CategoriesList categories={categories} />
+				<Center>
+					<CategoriesList categories={categories} />
+				</Center>
 			</Flex>
 		) : (
 			<Spinner />
