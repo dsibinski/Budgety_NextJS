@@ -82,16 +82,16 @@ export const getServerSideProps = withAuthUserTokenSSR({
 	if (typeof AuthUser.id !== 'string') {
 		throw new Error('User has no id');
 	}
-	const categoriesDocument = await getFirebaseAdmin()
+	const userCategoriesDocument = await getFirebaseAdmin()
 		.firestore()
-		.collection('categories')
+		.collection('users')
 		.doc(AuthUser.id)
 		.get();
 
-	if (!categoriesDocument.exists) {
+	if (!userCategoriesDocument.exists) {
 		await getFirebaseAdmin()
 			.firestore()
-			.collection('categories')
+			.collection('users')
 			.doc(AuthUser.id)
 			.set({});
 	}
