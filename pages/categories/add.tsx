@@ -13,8 +13,10 @@ import { Formik, Form, Field, FieldProps } from 'formik';
 import OperationType from '../../models/operationType';
 import firebase from 'firebase';
 import { useAuthUser } from 'next-firebase-auth';
+import { useRouter } from 'next/dist/client/router';
 
 const Add = () => {
+	const router = useRouter();
 	const AuthUser = useAuthUser();
 	function validateName(value: string) {
 		let error;
@@ -23,14 +25,6 @@ const Add = () => {
 		}
 		return error;
 	}
-
-	// function validateType(value: OperationType) {
-	// 	let error;
-	// 	if (!value) {
-	// 		error = 'Category type is required';
-	// 	}
-	// 	return error;
-	// }
 
 	return (
 		<Flex direction="column">
@@ -44,8 +38,8 @@ const Add = () => {
 						.collection('categories')
 						.add(values)
 						.then((result) => {
-							alert('Added successfully');
 							actions.setSubmitting(false);
+							router.push('/categories');
 						});
 				}}
 			>
