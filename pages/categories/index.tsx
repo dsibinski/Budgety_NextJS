@@ -1,13 +1,4 @@
-import {
-	Flex,
-	Heading,
-	UnorderedList,
-	ListItem,
-	Text,
-	Spinner,
-	Button,
-	Center,
-} from '@chakra-ui/react';
+import { Flex, Spinner, Button, Center } from '@chakra-ui/react';
 import firebase from 'firebase';
 import {
 	AuthAction,
@@ -16,6 +7,7 @@ import {
 	withAuthUserTokenSSR,
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
+import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import CategoriesList from '../../components/CategoriesList';
 import Category from '../../models/category';
@@ -23,6 +15,7 @@ import Category from '../../models/category';
 function Categories() {
 	const AuthUser = useAuthUser();
 	const [categories, setCategories] = useState<Category[] | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (AuthUser) {
@@ -63,7 +56,11 @@ function Categories() {
 	if (AuthUser) {
 		return categories ? (
 			<Flex direction="column" width="full">
-				<Button colorScheme="blue" alignSelf="start">
+				<Button
+					colorScheme="blue"
+					alignSelf="start"
+					onClick={() => router.push('/categories/add')}
+				>
 					Add new category
 				</Button>
 				<Center>
