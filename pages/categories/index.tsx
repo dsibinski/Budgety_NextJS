@@ -18,11 +18,11 @@ import {
 } from 'next-firebase-auth';
 import React, { useEffect, useState } from 'react';
 import CategoriesList from '../../components/CategoriesList';
-import UserCategories from '../../models/userCategories';
+import Category from '../../models/category';
 
 function Categories() {
 	const AuthUser = useAuthUser();
-	const [categories, setCategories] = useState<UserCategories | null>(null);
+	const [categories, setCategories] = useState<Category[] | null>(null);
 
 	useEffect(() => {
 		if (AuthUser) {
@@ -31,26 +31,29 @@ function Categories() {
 			}
 			firebase
 				.firestore()
-				.collection('categories')
+				.collection('users')
 				.doc(AuthUser.id)
+				.collection('categories')
 				.get()
-				.then((doc) => {
-					let userCategoriesData: UserCategories | null = null;
+				.then((categoriesData) => {
+					let userCategoriesData: Category[] | null = null;
 
-					const categoryDocData = doc.data();
+					const categoriesDocs = categoriesData.docs;
 
-					if (!categoryDocData) {
+					if (!categoriesDocs) {
 						throw new Error(
 							"There's no categories data for this user"
 						);
 					}
 
-					const names = categoryDocData['names'];
-					if (names?.length > 0) {
-						userCategoriesData = {
-							names: names,
+					userCategoriesData = categoriesDocs.map((catDoc) => {
+						const categoryObj: Category = {
+							name: catDoc.data().name,
+							type: catDoc.data().type,
 						};
-					}
+
+						return categoryObj;
+					});
 
 					setCategories(userCategoriesData);
 				});

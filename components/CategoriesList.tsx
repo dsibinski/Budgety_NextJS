@@ -7,10 +7,10 @@ import {
 	Td,
 	TableCaption,
 } from '@chakra-ui/react';
-import UserCategories from '../models/userCategories';
+import Category from '../models/category';
 
 type CategoriesListProps = {
-	categories: UserCategories;
+	categories: Category[];
 };
 
 const CategoriesList = ({ categories }: CategoriesListProps) => {
@@ -20,13 +20,15 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 			<Thead>
 				<Tr>
 					<Th fontSize="large">Category name</Th>
+					<Th fontSize="large">Operations type</Th>
 				</Tr>
 			</Thead>
 			<Tbody>
-				{categories.names.map((categoryName) => {
+				{categories.map((category) => {
 					return (
-						<tr key={categoryName}>
-							<td align="center">{categoryName}</td>
+						<tr key={category.name}>
+							<td align="center">{category.name}</td>
+							<td align="center">{category.type}</td>
 						</tr>
 					);
 				})}
