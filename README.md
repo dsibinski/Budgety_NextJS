@@ -21,7 +21,7 @@ yarn dev
 ## Backend
 
 Budgety app uses Firebase as backend.
-In order to use it with your Firebase, create `.ENV` file and create all necessary values:
+In order to use it with your Firebase, create `.env.local` file and create all necessary values:
 
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=
