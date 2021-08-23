@@ -12,7 +12,7 @@ import {
 import { Formik, Form, Field, FieldProps } from 'formik';
 import OperationType from '../../models/operationType';
 import firebase from 'firebase';
-import { useAuthUser } from 'next-firebase-auth';
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth';
 import { useRouter } from 'next/dist/client/router';
 
 const Add = () => {
@@ -120,4 +120,6 @@ const Add = () => {
 	);
 };
 
-export default Add;
+export default withAuthUser({
+	whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+})(Add);
