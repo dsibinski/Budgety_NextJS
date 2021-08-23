@@ -7,7 +7,7 @@ import {
 	withAuthUserTokenSSR,
 	getFirebaseAdmin,
 } from 'next-firebase-auth';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import CategoriesList from '../../components/CategoriesList';
 import Category from '../../models/category';
@@ -40,9 +40,11 @@ function Categories() {
 					}
 
 					userCategoriesData = categoriesDocs.map((catDoc) => {
+						const docData = catDoc.data();
 						const categoryObj: Category = {
-							name: catDoc.data().name,
-							type: catDoc.data().type,
+							id: catDoc.id,
+							name: docData.name,
+							type: docData.type,
 						};
 
 						return categoryObj;
