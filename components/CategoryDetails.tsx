@@ -28,7 +28,11 @@ const CategoryDetails = (props: CategoryDetailsProps) => {
 
 	return (
 		<div>
-			<Formik initialValues={props.category} onSubmit={props.onSubmit}>
+			<Formik
+				initialValues={props.category}
+				onSubmit={props.onSubmit}
+				enableReinitialize
+			>
 				{({ isSubmitting }) => (
 					<Form>
 						<Field name="name" validate={validateName}>

@@ -1,6 +1,9 @@
+import CategoryDetails from 'components/CategoryDetails';
+import firebase from 'firebase';
 import {
 	AuthAction,
 	getFirebaseAdmin,
+	useAuthUser,
 	withAuthUserTokenSSR,
 } from 'next-firebase-auth';
 import { useRouter } from 'next/router';
@@ -8,8 +11,24 @@ import Category from '../../../models/category';
 
 const CategoryEditView = ({ category }: { category: Category }) => {
 	const router = useRouter();
+	const AuthUser = useAuthUser();
+	const onSaveCategory = async function (value: Category) {
+		try {
+			await firebase
+				.firestore()
+				.collection('users')
+				.doc(AuthUser.id as string)
+				.collection('categories')
+				.doc(value.id)
+				.update(value);
+		} catch (error) {
+			alert('There was an error when updating the category: ' + error);
+		}
 
-	return <p>Category name: {category.name}</p>;
+		router.push('/categories');
+	};
+
+	return <CategoryDetails category={category} onSubmit={onSaveCategory} />;
 };
 
 export const getServerSideProps = withAuthUserTokenSSR({
@@ -42,7 +61,11 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
 	return {
 		props: {
-			category: category,
+			category: {
+				id: categoryDoc.id,
+				name: category.name,
+				type: category.type,
+			},
 		},
 	};
 });
