@@ -16,6 +16,7 @@ import Category from 'models/category';
 type CategoryDetailsProps = {
 	category: Category;
 	onSubmit: (value: Category) => Promise<void>;
+	onCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 const CategoryDetails = (props: CategoryDetailsProps) => {
 	const validateName = function (value: string) {
@@ -103,6 +104,15 @@ const CategoryDetails = (props: CategoryDetailsProps) => {
 							type="submit"
 						>
 							Save
+						</Button>
+						<Button
+							ml={2}
+							mt={4}
+							colorScheme="red"
+							type="button"
+							onClick={props.onCancel}
+						>
+							Cancel
 						</Button>
 					</Form>
 				)}

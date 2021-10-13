@@ -29,7 +29,7 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 			<Tbody>
 				{categories.map((category) => {
 					return (
-						<tr key={category.name}>
+						<tr key={category.id}>
 							<td align="center">
 								<Button
 									variant="link"

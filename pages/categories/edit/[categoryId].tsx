@@ -28,7 +28,13 @@ const CategoryEditView = ({ category }: { category: Category }) => {
 		router.push('/categories');
 	};
 
-	return <CategoryDetails category={category} onSubmit={onSaveCategory} />;
+	return (
+		<CategoryDetails
+			category={category}
+			onSubmit={onSaveCategory}
+			onCancel={() => router.push('/categories')}
+		/>
+	);
 };
 
 export const getServerSideProps = withAuthUserTokenSSR({

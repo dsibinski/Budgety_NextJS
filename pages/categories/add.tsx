@@ -32,7 +32,11 @@ const Add = () => {
 
 	return (
 		<Flex direction="column">
-			<CategoryDetails category={newCategory} onSubmit={onAddCategory} />
+			<CategoryDetails
+				category={newCategory}
+				onSubmit={onAddCategory}
+				onCancel={() => router.push('/categories')}
+			/>
 		</Flex>
 	);
 };
