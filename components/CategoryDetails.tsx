@@ -99,20 +99,20 @@ const CategoryDetails = (props: CategoryDetailsProps) => {
 						</Field>
 						<Button
 							mt={4}
-							colorScheme="teal"
-							isLoading={isSubmitting}
-							type="submit"
-						>
-							Save
-						</Button>
-						<Button
-							ml={2}
-							mt={4}
 							colorScheme="red"
 							type="button"
 							onClick={props.onCancel}
 						>
 							Cancel
+						</Button>
+						<Button
+							ml={2}
+							mt={4}
+							colorScheme="teal"
+							isLoading={isSubmitting}
+							type="submit"
+						>
+							Save
 						</Button>
 					</Form>
 				)}
