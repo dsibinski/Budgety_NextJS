@@ -35,3 +35,8 @@ yarn-error.log*
 
 .env.local
 budgety-secrets.json
+
+# PWA
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*
