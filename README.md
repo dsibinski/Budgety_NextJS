@@ -2,7 +2,6 @@
 
 https://budgetyapp.com
 
-
 This is a repository of Budgety app.
 The documentation can be found on Notion: https://dsibinski.notion.site/Budgety-38ba6937a6d34c379d6ec495fbc5d244
 
@@ -35,4 +34,10 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 # for firebase-admin
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
+
+
+# for cookies
+COOKIE_SECRET_CURRENT=
+COOKIE_SECRET_PREVIOUS=
+NEXT_PUBLIC_COOKIE_SECURE=false # should be true in prod HTTPS environment
 ```

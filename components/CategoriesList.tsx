@@ -20,6 +20,9 @@ type CategoriesListProps = {
 const CategoriesList = ({ categories }: CategoriesListProps) => {
 	const router = useRouter();
 	const AuthUser = useAuthUser();
+	const [categoriesToDisplay, setCategoriesToDisplay] =
+		useState<Category[]>(categories);
+
 	const [deleteDialogOpened, setDeleteDialogOpened] =
 		useState<boolean>(false);
 	const [categoryToDelete, setCategoryToDelete] =
@@ -44,7 +47,14 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 		}
 
 		alert(`Successfully deleted ${category.name}`);
-		router.push('/categories');
+		let currentCategoriesToDisplay = [...categoriesToDisplay];
+		const categoryToDeleteIndex = currentCategoriesToDisplay.findIndex(
+			(c) => c.id === category.id
+		);
+		if (categoryToDeleteIndex !== -1) {
+			currentCategoriesToDisplay.splice(categoryToDeleteIndex, 1);
+		}
+		setCategoriesToDisplay(currentCategoriesToDisplay);
 	};
 
 	return (
@@ -84,7 +94,7 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 					</Tr>
 				</Thead>
 				<Tbody>
-					{categories.map((category) => {
+					{categoriesToDisplay.map((category) => {
 						return (
 							<tr key={category.id}>
 								<td align="center">{category.name}</td>
