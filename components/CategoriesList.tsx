@@ -22,36 +22,52 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 	const AuthUser = useAuthUser();
 	const [deleteDialogOpened, setDeleteDialogOpened] =
 		useState<boolean>(false);
+	const [categoryToDelete, setCategoryToDelete] =
+		useState<Category | null>(null);
 
-	// TODO: finish showing this dialog.. https://chakra-ui.com/docs/overlay/alert-dialog
-	//const onDeleteCategoryClicked
+	const onDeleteCategory = (value: Category) => {
+		setCategoryToDelete(value);
+		setDeleteDialogOpened(true);
+	};
 
-	const onDeleteCategory = async function (value: Category) {
+	const deleteCategory = async (category: Category) => {
 		try {
 			await firebase
 				.firestore()
 				.collection('users')
 				.doc(AuthUser.id as string)
 				.collection('categories')
-				.doc(value.id)
+				.doc(category.id)
 				.delete();
 		} catch (error) {
 			alert('There was an error when deleting the category: ' + error);
 		}
 
-		alert(`Successfully deleted ${value.name}`);
+		alert(`Successfully deleted ${category.name}`);
 		router.push('/categories');
 	};
+
 	return (
 		<>
-			<DeleteConfirmationDialog
-				isOpen={deleteDialogOpened}
-				title="Delete category"
-				confirmationMessage="Are you sure you want to delete this category?"
-				onClose={(confirmed) => {
-					setDeleteDialogOpened(false);
-				}}
-			/>
+			{!!categoryToDelete && (
+				<DeleteConfirmationDialog
+					isOpen={deleteDialogOpened}
+					title="Delete category"
+					confirmationMessage="Are you sure you want to delete this category?"
+					objectToDelete={categoryToDelete}
+					onClose={(categoryToDelete, confirmed) => {
+						setDeleteDialogOpened(false);
+
+						if (confirmed === false) {
+							setCategoryToDelete(null);
+							return;
+						}
+
+						deleteCategory(categoryToDelete);
+						setCategoryToDelete(null);
+					}}
+				/>
+			)}
 			<Table variant="striped" width="fit-content" fontSize="xl">
 				<TableCaption placement="top">Your categories</TableCaption>
 				<Thead>

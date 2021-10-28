@@ -9,18 +9,21 @@ import {
 } from '@chakra-ui/react';
 import React, { useRef } from 'react';
 
-type DeleteConfirmationDialogProps = {
+type DeleteConfirmationDialogProps<ObjectType> = {
 	isOpen: boolean;
 	title: string;
 	confirmationMessage: string;
-	objectToDelete: { id: string; name: string };
-	onClose: (confirmed: boolean) => void;
+	objectToDelete: ObjectType & { id: string; name: string };
+	onClose: (
+		objectToDelete: ObjectType & { id: string; name: string },
+		confirmed: boolean
+	) => void;
 };
-export const DeleteConfirmationDialog = (
-	props: DeleteConfirmationDialogProps
-) => {
+export function DeleteConfirmationDialog<ObjectType>(
+	props: DeleteConfirmationDialogProps<ObjectType>
+) {
 	const onDialogClose = (confirmed: boolean) => {
-		props.onClose(confirmed);
+		props.onClose(props.objectToDelete, confirmed);
 	};
 	const cancelRef = useRef();
 	return (
@@ -60,4 +63,4 @@ export const DeleteConfirmationDialog = (
 			</AlertDialog>
 		</>
 	);
-};
+}
