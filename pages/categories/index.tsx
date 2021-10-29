@@ -18,7 +18,7 @@ function Categories() {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (AuthUser) {
+		if (AuthUser && !!AuthUser.id) {
 			if (typeof AuthUser.id !== 'string') {
 				throw new Error('User has no id');
 			}
@@ -55,7 +55,7 @@ function Categories() {
 		}
 	}, [AuthUser]);
 
-	if (AuthUser) {
+	if (AuthUser && !!AuthUser.id) {
 		return categories ? (
 			<Flex direction="column" width="full">
 				<Button
