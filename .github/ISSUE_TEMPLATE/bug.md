@@ -3,7 +3,7 @@ name: Bug
 about: Report a bug to help us improve the app
 title: ''
 labels: bug
-assignees: dsibinski
+assignees: ''
 
 ---
 

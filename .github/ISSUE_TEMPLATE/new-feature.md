@@ -3,7 +3,7 @@ name: New feature
 about: Suggest an idea for a new feature
 title: ''
 labels: enhancement
-assignees: dsibinski
+assignees: ''
 
 ---
 
