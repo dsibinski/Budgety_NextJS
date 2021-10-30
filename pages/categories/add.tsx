@@ -4,7 +4,8 @@ import { useRouter } from 'next/dist/client/router';
 import CategoryDetails from 'components/CategoryDetails';
 import Category from 'models/category';
 import OperationType from 'models/operationType';
-import firebase from 'firebase';
+import { getFirestore, collection, doc, addDoc } from 'firebase/firestore';
+import { getApp } from 'firebase/app';
 
 const Add = () => {
 	const router = useRouter();
@@ -17,12 +18,14 @@ const Add = () => {
 
 	const onAddCategory = async function (value: Category) {
 		try {
-			await firebase
-				.firestore()
-				.collection('users')
-				.doc(AuthUser.id as string)
-				.collection('categories')
-				.add(value);
+			const db = getFirestore(getApp());
+			await addDoc(
+				collection(
+					doc(collection(db, 'users'), AuthUser.id as string),
+					'categories'
+				),
+				value
+			);
 		} catch (error) {
 			alert('There was an error when adding new category.');
 		}

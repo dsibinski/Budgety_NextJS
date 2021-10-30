@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import firebase from 'firebase/app';
+import {
+	getAuth,
+	EmailAuthProvider,
+	GoogleAuthProvider,
+	FacebookAuthProvider,
+} from 'firebase/auth';
 import 'firebase/auth';
 
 const uiConfig = {
@@ -8,11 +13,11 @@ const uiConfig = {
 	signInSuccessUrl: '/',
 	signInOptions: [
 		{
-			provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+			provider: EmailAuthProvider.PROVIDER_ID,
 			requireDisplayName: false,
 		},
-		firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-		firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+		GoogleAuthProvider.PROVIDER_ID,
+		FacebookAuthProvider.PROVIDER_ID,
 	],
 	credentialHelper: 'none',
 	callbacks: {
@@ -33,7 +38,7 @@ const FirebaseAuth = () => {
 			{renderAuth ? (
 				<StyledFirebaseAuth
 					uiConfig={uiConfig}
-					firebaseAuth={firebase.auth()}
+					firebaseAuth={getAuth()}
 				/>
 			) : null}
 		</div>

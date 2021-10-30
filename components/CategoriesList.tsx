@@ -9,7 +9,8 @@ import {
 } from '@chakra-ui/react';
 import Category from '../models/category';
 import { useRouter } from 'next/router';
-import firebase from 'firebase';
+import { getFirestore, collection, doc, deleteDoc } from 'firebase/firestore';
+import { getApp } from 'firebase/app';
 import { useAuthUser } from 'next-firebase-auth';
 import { useState } from 'react';
 import { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
@@ -35,13 +36,16 @@ const CategoriesList = ({ categories }: CategoriesListProps) => {
 
 	const deleteCategory = async (category: Category) => {
 		try {
-			await firebase
-				.firestore()
-				.collection('users')
-				.doc(AuthUser.id as string)
-				.collection('categories')
-				.doc(category.id)
-				.delete();
+			const db = getFirestore(getApp());
+			await deleteDoc(
+				doc(
+					collection(
+						doc(collection(db, 'users'), AuthUser.id as string),
+						'categories'
+					),
+					category.id
+				)
+			);
 		} catch (error) {
 			alert('There was an error when deleting the category: ' + error);
 		}
