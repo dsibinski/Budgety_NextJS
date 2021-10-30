@@ -35,7 +35,7 @@ const FirebaseAuth = () => {
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			setRenderAuth(true);
-			// to be replaced with react-firebaseui, see
+			// to be replaced with react-firebaseui, see https://github.com/dsibinski/Budgety/issues/29
 			const renderReactUiStyledComponents = async () => {
 				const firebaseui = await import('firebaseui');
 				const ui = firebaseUi || new firebaseui.auth.AuthUI(getAuth());
