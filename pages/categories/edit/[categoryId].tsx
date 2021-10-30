@@ -1,5 +1,6 @@
 import CategoryDetails from 'components/CategoryDetails';
-import firebase from 'firebase';
+import { getApp } from 'firebase/app';
+import { getFirestore, collection, doc, updateDoc } from 'firebase/firestore';
 import {
 	AuthAction,
 	getFirebaseAdmin,
@@ -14,13 +15,17 @@ const CategoryEditView = ({ category }: { category: Category }) => {
 	const AuthUser = useAuthUser();
 	const onSaveCategory = async function (value: Category) {
 		try {
-			await firebase
-				.firestore()
-				.collection('users')
-				.doc(AuthUser.id as string)
-				.collection('categories')
-				.doc(value.id)
-				.update(value);
+			const db = getFirestore(getApp());
+			await updateDoc(
+				doc(
+					collection(
+						doc(collection(db, 'users'), AuthUser.id as string),
+						'categories'
+					),
+					value.id
+				),
+				value
+			);
 		} catch (error) {
 			alert('There was an error when updating the category: ' + error);
 		}

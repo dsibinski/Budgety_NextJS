@@ -1,6 +1,12 @@
-import { useEffect, useState } from 'react';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import firebase from 'firebase/app';
+import { useCallback, useEffect, useState } from 'react';
+const FirebaseUiStyle = require('firebaseui/dist/firebaseui.css');
+
+import {
+	getAuth,
+	EmailAuthProvider,
+	GoogleAuthProvider,
+	FacebookAuthProvider,
+} from 'firebase/auth';
 import 'firebase/auth';
 
 const uiConfig = {
@@ -8,11 +14,11 @@ const uiConfig = {
 	signInSuccessUrl: '/',
 	signInOptions: [
 		{
-			provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+			provider: EmailAuthProvider.PROVIDER_ID,
 			requireDisplayName: false,
 		},
-		firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-		firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+		GoogleAuthProvider.PROVIDER_ID,
+		FacebookAuthProvider.PROVIDER_ID,
 	],
 	credentialHelper: 'none',
 	callbacks: {
@@ -21,20 +27,29 @@ const uiConfig = {
 	},
 };
 
+let firebaseUi: firebaseui.auth.AuthUI;
+
 const FirebaseAuth = () => {
 	const [renderAuth, setRenderAuth] = useState(false);
+
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			setRenderAuth(true);
+			// to be replaced with react-firebaseui, see https://github.com/dsibinski/Budgety/issues/29
+			const renderReactUiStyledComponents = async () => {
+				const firebaseui = await import('firebaseui');
+				const ui = firebaseUi || new firebaseui.auth.AuthUI(getAuth());
+				ui.start('#firebaseui-styled-auth-component', uiConfig);
+			};
+
+			renderReactUiStyledComponents();
 		}
 	}, []);
+
 	return (
 		<div>
 			{renderAuth ? (
-				<StyledFirebaseAuth
-					uiConfig={uiConfig}
-					firebaseAuth={firebase.auth()}
-				/>
+				<div id="firebaseui-styled-auth-component"></div>
 			) : null}
 		</div>
 	);

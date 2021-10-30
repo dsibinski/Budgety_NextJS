@@ -4,4 +4,7 @@ module.exports = withPWA({
 	pwa: {
 		dest: 'public',
 	},
+	experimental: {
+		esmExternals: false,
+	},
 });

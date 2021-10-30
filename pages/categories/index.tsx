@@ -1,5 +1,6 @@
 import { Flex, Spinner, Button, Center } from '@chakra-ui/react';
-import firebase from 'firebase';
+import { getApp } from 'firebase/app';
+import { getFirestore, collection, doc, getDocs } from 'firebase/firestore';
 import {
 	AuthAction,
 	useAuthUser,
@@ -22,36 +23,34 @@ function Categories() {
 			if (typeof AuthUser.id !== 'string') {
 				throw new Error('User has no id');
 			}
-			firebase
-				.firestore()
-				.collection('users')
-				.doc(AuthUser.id)
-				.collection('categories')
-				.get()
-				.then((categoriesData) => {
-					let userCategoriesData: Category[] | null = null;
+			const db = getFirestore(getApp());
+			getDocs(
+				collection(
+					doc(collection(db, 'users'), AuthUser.id),
+					'categories'
+				)
+			).then((categoriesData) => {
+				let userCategoriesData: Category[] | null = null;
 
-					const categoriesDocs = categoriesData.docs;
+				const categoriesDocs = categoriesData.docs;
 
-					if (!categoriesDocs) {
-						throw new Error(
-							"There's no categories data for this user"
-						);
-					}
+				if (!categoriesDocs) {
+					throw new Error("There's no categories data for this user");
+				}
 
-					userCategoriesData = categoriesDocs.map((catDoc) => {
-						const docData = catDoc.data();
-						const categoryObj: Category = {
-							id: catDoc.id,
-							name: docData.name,
-							type: docData.type,
-						};
+				userCategoriesData = categoriesDocs.map((catDoc) => {
+					const docData = catDoc.data();
+					const categoryObj: Category = {
+						id: catDoc.id,
+						name: docData.name,
+						type: docData.type,
+					};
 
-						return categoryObj;
-					});
-
-					setCategories(userCategoriesData);
+					return categoryObj;
 				});
+
+				setCategories(userCategoriesData);
+			});
 		}
 	}, [AuthUser]);
 
