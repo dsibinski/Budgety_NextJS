@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { useCallback, useEffect, useState } from 'react';
+const FirebaseUiStyle = require('firebaseui/dist/firebaseui.css');
+
 import {
 	getAuth,
 	EmailAuthProvider,
@@ -26,20 +27,29 @@ const uiConfig = {
 	},
 };
 
+let firebaseUi: firebaseui.auth.AuthUI;
+
 const FirebaseAuth = () => {
 	const [renderAuth, setRenderAuth] = useState(false);
+
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
 			setRenderAuth(true);
+			// to be replaced with react-firebaseui, see
+			const renderReactUiStyledComponents = async () => {
+				const firebaseui = await import('firebaseui');
+				const ui = firebaseUi || new firebaseui.auth.AuthUI(getAuth());
+				ui.start('#firebaseui-styled-auth-component', uiConfig);
+			};
+
+			renderReactUiStyledComponents();
 		}
 	}, []);
+
 	return (
 		<div>
 			{renderAuth ? (
-				<StyledFirebaseAuth
-					uiConfig={uiConfig}
-					firebaseAuth={getAuth()}
-				/>
+				<div id="firebaseui-styled-auth-component"></div>
 			) : null}
 		</div>
 	);
